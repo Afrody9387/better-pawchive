@@ -1,5 +1,6 @@
 import { DatabaseLifecycle, ArtistStore, PostStore } from "../../core/database/contracts";
 import { createDatabaseServices } from "../../core/database/createDatabaseServices";
+import { t, getLanguage, initializePreferences, subscribeLanguage } from '../../shared/i18n';
 
 if (typeof browser === "undefined") {
   //@ts-ignore
@@ -19,6 +20,17 @@ type PopupServices = {
 };
 
 export async function createPopupApp({ lifecycle, artists, posts }: PopupServices): Promise<void> {
+  await initializePreferences();
+  const translate = () => {
+    document.documentElement.lang = getLanguage() === 'zh' ? 'zh-CN' : 'en';
+    document.querySelectorAll('.stat-label').forEach((element, index) => {
+      element.textContent = t(index === 0 ? 'Artists tracked' : 'Posts viewed');
+    });
+    const button = document.getElementById('open-management');
+    if (button) button.textContent = t('Manage Data →');
+  };
+  translate();
+  subscribeLanguage(translate);
   await lifecycle.init();
   const [allArtists, allPosts] = await Promise.all([artists.getAll(), posts.getAll()]);
   document.getElementById('artist-count')!.textContent = String(allArtists.length);

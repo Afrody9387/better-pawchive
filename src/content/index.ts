@@ -3,10 +3,21 @@ import { AddAudioElementsForAudioLinks } from "../features/audioPlayer/dom";
 import { AddViewedTagsOnAllPosts } from "../features/viewTracking/dom";
 import { ContentMessage } from "../shared/types/ContentMessage";
 import { setupQuickFollow } from "../features/quickFollow/dom";
+import { initializePreferences, subscribeLanguage, shouldTranslatePawchive, t } from '../shared/i18n';
+import { setupPageTranslation } from '../features/pageTranslation/dom';
+
+if (typeof browser === 'undefined') {
+  //@ts-ignore
+  globalThis.browser = chrome;
+}
+
+void initializePreferences().catch(console.error);
 
 if (location.hostname === 'pawchive.pw') {
   const start = () => {
     setupQuickFollow();
+    const translation = setupPageTranslation(document, shouldTranslatePawchive);
+    subscribeLanguage(translation.refresh);
     const notifyPageReady = () => {
       if (isContextValid()) browser.runtime.sendMessage({ type: EventTypes.PageReady, data: {} }).catch(() => {});
     };
@@ -15,11 +26,6 @@ if (location.hostname === 'pawchive.pw') {
   };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once: true });
   else start();
-}
-
-if (typeof browser === "undefined") {
-  //@ts-ignore
-  globalThis.browser = chrome;
 }
 
 // Inject the interception script into the page context
@@ -87,6 +93,11 @@ document.addEventListener('click', (e) => {
     }
   }
 }, true); // Use event capturing
+
+subscribeLanguage(() => {
+  document.querySelectorAll('.viewed-tag').forEach(element => { element.textContent = t('viewed'); });
+  document.querySelectorAll<HTMLElement>('.mark-as-unread-button').forEach(element => { element.title = t('Mark as Unread'); });
+});
 
 browser.runtime.onMessage.addListener((message: ContentMessage, sender) => {
   switch (message.type) {

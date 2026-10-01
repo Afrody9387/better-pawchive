@@ -1,3 +1,4 @@
+import { t } from "../../../shared/i18n";
 import { Artist } from "../../../shared/types/Artist";
 import { Post } from "../../../shared/types/Post";
 import { escapeHtml } from "../utils/format";
@@ -10,15 +11,15 @@ export function renderHome(
 
   const header = document.createElement('div');
   header.className = 'page-header';
-  header.innerHTML = `<h1>Overview</h1><p>Summary of your tracked data</p>`;
+  header.innerHTML = `<h1>${t('Overview')}</h1><p>${t('Summary of your tracked data')}</p>`;
   wrap.appendChild(header);
 
   const statsGrid = document.createElement('div');
   statsGrid.className = 'stats-grid';
 
   const statDefs = [
-    { value: String(artists.length), label: 'Artists Tracked', sub: '' },
-    { value: String(posts.length), label: 'Posts Viewed', sub: '' },
+    { value: String(artists.length), label: t('Artists Tracked'), sub: '' },
+    { value: String(posts.length), label: t('Posts Viewed'), sub: '' },
   ];
 
   for (const def of statDefs) {

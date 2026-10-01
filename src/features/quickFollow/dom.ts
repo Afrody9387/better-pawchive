@@ -1,3 +1,4 @@
+import { t, subscribeLanguage } from '../../shared/i18n';
 type Favorite = { id: string; service: string };
 
 // Uses Pawchive's account favorites, including its native "favs" cache.
@@ -8,6 +9,7 @@ export function setupQuickFollow(doc: Document = document): () => void {
   let loading: Promise<void> | null = null;
   const pending = new Set<string>();
   let disposed = false;
+  let lastNotice: string | null = null;
   const loggedIn = () => win.localStorage.getItem('logged_in') === 'yes';
   const key = (artist: Favorite) => JSON.stringify([artist.service, artist.id]);
 
@@ -21,6 +23,10 @@ export function setupQuickFollow(doc: Document = document): () => void {
   }
 
   function render(): void {
+    if (lastNotice) {
+      const status = doc.querySelector('.bck-follow-status');
+      if (status && status.textContent !== t(lastNotice)) status.textContent = t(lastNotice);
+    }
     doc.querySelectorAll<HTMLElement>('.user-card').forEach(card => {
       const artist = artistFor(card);
       if (!artist) return;
@@ -39,13 +45,14 @@ export function setupQuickFollow(doc: Document = document): () => void {
       button.disabled = busy;
       button.setAttribute('aria-pressed', String(followed));
       const name = card.querySelector('.user-card__name')?.textContent?.trim() || artist.id;
-      button.title = loggedIn() ? `${followed ? 'Unfavorite' : 'Favorite'} ${name}` : 'Log in to Pawchive to favorite';
+      button.title = loggedIn() ? t(followed ? 'Unfavorite {name}' : 'Favorite {name}', { name }) : t('Log in to Pawchive to favorite');
       button.setAttribute('aria-label', button.title);
       if (favorites !== null || !loggedIn()) card.classList.toggle('user-card--fav', followed);
     });
   }
 
   function notice(message: string): void {
+    lastNotice = message;
     let status = doc.querySelector<HTMLElement>('.bck-follow-status');
     if (!status) {
       status = doc.createElement('div');
@@ -53,7 +60,7 @@ export function setupQuickFollow(doc: Document = document): () => void {
       status.setAttribute('role', 'status');
       doc.body.appendChild(status);
     }
-    status.textContent = message;
+    status.textContent = t(message);
   }
 
   async function load(): Promise<void> {
@@ -76,7 +83,7 @@ export function setupQuickFollow(doc: Document = document): () => void {
   async function toggle(button: HTMLButtonElement): Promise<void> {
     const artist = artistFor(button.closest<HTMLElement>('.user-card')!);
     if (!artist || pending.has(key(artist))) return;
-    if (!loggedIn()) { notice('请先登录 Pawchive，再关注作者。'); return; }
+    if (!loggedIn()) { notice('Please log in to Pawchive before favoriting.'); return; }
     pending.add(key(artist));
     render();
     try {
@@ -88,17 +95,17 @@ export function setupQuickFollow(doc: Document = document): () => void {
       });
       if (!response.ok || response.redirected) {
         throw new Error(response.status === 401 || response.status === 403
-          ? '登录已失效，请重新登录 Pawchive。'
-          : '关注操作失败，请稍后重试。');
+          ? 'Your session expired. Please log in to Pawchive again.'
+          : 'Favorite action failed. Please try again.');
       }
       // Merge native changes made while the request was in flight.
       readCache();
       favorites = favorites!.filter(fav => key(fav) !== key(artist));
       if (!followed) favorites.push(artist);
       win.localStorage.setItem('favs', JSON.stringify(favorites));
-      notice(followed ? '已取消关注。' : '已关注。');
+      notice(followed ? 'Unfavorited.' : 'Favorited.');
     } catch (error) {
-      notice(error instanceof Error ? error.message : '关注操作失败，请稍后重试。');
+      notice(error instanceof Error ? error.message : 'Favorite action failed. Please try again.');
     } finally {
       pending.delete(key(artist));
       if (!disposed) render();
@@ -134,9 +141,11 @@ export function setupQuickFollow(doc: Document = document): () => void {
   doc.addEventListener('click', onClick, true);
   win.addEventListener('storage', onStorage);
   render();
+  const unsubscribe = subscribeLanguage(render);
   void load().catch(error => notice(error.message));
   return () => {
     disposed = true;
+    unsubscribe();
     observer.disconnect();
     doc.removeEventListener('click', onClick, true);
     win.removeEventListener('storage', onStorage);

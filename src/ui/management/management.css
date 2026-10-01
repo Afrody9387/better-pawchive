@@ -810,3 +810,6 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255,255,255,0.2);
 }
+.settings-option { display: flex; align-items: center; gap: 12px; margin: 20px 0; flex-wrap: wrap; }
+.settings-option select { padding: 8px 12px; border-radius: 6px; background: #252a34; color: #fff; border: 1px solid #687086; }
+.settings-hint { color: #aab1bf; line-height: 1.6; }

@@ -53,6 +53,8 @@ New site permissions may require re-enabling the extension.
 | Viewed tags | Visited posts show a green `viewed` tag. Click `x` to clear it. |
 | Audio players | Adds players for `.mp3` and `.wav` attachment links. |
 | History management | Extension icon → **Manage Data** to browse metadata and counts, remove records, or reset the database. |
+| Interface language | **Manage Data → Settings → Language** selects English or 简体中文 for the popup, management, favorite messages, and jump buttons. |
+| Pawchive translation | Chinese mode translates site navigation, search, sorting, profile tabs, and favorite controls by default. Toggle it independently in Settings; creator names and post content stay original. |
 | Jump preferences | **Manage Data → Settings** controls opening jumps in a new tab. |
 
 ### Supported source pages
@@ -75,6 +77,8 @@ and DLsite are outside this edition's jump scope.
 - `kemono.cr` and `coomer.st`: retain upstream tracking, audio, and management.
   Quick card favorites are specific to Pawchive.
 
+Preferences persist locally across browser restarts and update open tabs. Site translation uses a bundled dictionary without an online translation service. Unlisted labels may remain in English.
+
 ## Data, permissions and limitations
 
 Browsing records stay in the local extension database. Favorites use your
@@ -90,10 +94,11 @@ Enrichment is triggered by page visits or management views, not periodic tasks.
 Upstream artist/post id keys can share tracking records across platforms.
 Site structure and API changes may require updates.
 
-The initial release passes **234 automated tests**. Creator resolution was
+The current release passes **244 automated tests**. Creator resolution was
 checked against real public Patreon and Fanbox HTML. Authenticated flows,
 Discord pages, and complete browser workflows still need live verification.
 
+- [Language and translation checklist](docs/localization-validation.md)
 - [Pawchive validation](docs/pawchive-validation.md)
 - [Jump checklist](docs/pawchive-jump-validation.md)
 - [Report an issue](https://github.com/Afrody9387/better-pawchive/issues) with browser

@@ -1,3 +1,4 @@
+import { t } from "../../../shared/i18n";
 import { Artist } from "../../../shared/types/Artist";
 import { Post } from "../../../shared/types/Post";
 import { hostForArtist } from "../../../core/hosts/HostResolver";
@@ -16,7 +17,7 @@ export function renderPostCard(
   const card = document.createElement('div');
   card.className = 'post-card';
 
-  const artistName = artist?.name || post.artist_id || 'Unknown';
+  const artistName = artist?.name || post.artist_id || t('Unknown');
 
   const postUrl = artist
     ? `https://${hostForArtist(artist)}/${artist.content_origin}/user/${artist.id}/post/${post.id}`
@@ -61,14 +62,14 @@ export function renderPostCard(
 
   const title = document.createElement('div');
   title.className = 'post-card-title';
-  title.title = name || 'Untitled';
-  title.textContent = name || 'Untitled';
+  title.title = name || t('Untitled');
+  title.textContent = name || t('Untitled');
   body.appendChild(title);
 
   if (attachment_count != null && attachment_count > 0) {
     const chip = document.createElement('div');
     chip.className = 'attachment-chip';
-    chip.textContent = `📎 ${attachment_count} attachment${attachment_count !== 1 ? 's' : ''}`;
+    chip.textContent = '📎 ' + t(attachment_count === 1 ? '{count} attachment' : '{count} attachments', { count: attachment_count });
     body.appendChild(chip);
   }
 
@@ -76,8 +77,8 @@ export function renderPostCard(
   meta.className = 'post-card-meta';
 
   const metaRows: [string, string][] = [
-    ['Viewed', formatDate(post.viewed_at)],
-    ['Posted', formatDate(posted_at)],
+    [t('Viewed'), formatDate(post.viewed_at)],
+    [t('Posted'), formatDate(posted_at)],
   ];
 
   for (const [label, value] of metaRows) {
@@ -95,8 +96,8 @@ export function renderPostCard(
   footer.className = 'post-card-footer';
   const delBtn = document.createElement('button');
   delBtn.className = 'btn-delete';
-  delBtn.textContent = 'Remove';
-  delBtn.addEventListener('click', () => deletePost(post.id, post.name || 'Untitled'));
+  delBtn.textContent = t('Remove');
+  delBtn.addEventListener('click', () => deletePost(post.id, post.name || t('Untitled')));
   footer.appendChild(delBtn);
   card.appendChild(footer);
 

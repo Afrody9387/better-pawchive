@@ -1,4 +1,5 @@
 import { Post } from "../../shared/types/Post";
+import { t } from '../../shared/i18n';
 
 export const AddViewedTagsOnAllPosts = async (document: Document, posts: Post[]) => {
   const processViewedTags = () => {
@@ -34,7 +35,7 @@ export const AddViewedTagsOnAllPosts = async (document: Document, posts: Post[])
       // Create and add the viewed label
       const viewedLabel = document.createElement("label");
       viewedLabel.className = "viewed-tag";
-      viewedLabel.innerHTML = "viewed";
+      viewedLabel.textContent = t('viewed');
       viewedLabel.style.color = "#b4ffb4";
 
       // Create and add the "Mark as Unread" button
@@ -52,7 +53,7 @@ export const AddViewedTagsOnAllPosts = async (document: Document, posts: Post[])
         padding: 2px 5px;
         margin-left: 5px;
       `;
-      markAsUnreadButton.title = "Mark as Unread";
+      markAsUnreadButton.title = t('Mark as Unread');
       markAsUnreadButton.setAttribute('data-post-id', postId);
 
       viewedTagContainer.append(viewedLabel);

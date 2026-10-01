@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Better Pawchive",
-  "version": "2.3.1",
+  "version": "2.4.0",
   "description": "Quickly favorite creators, jump to Pawchive from source sites, and track viewed posts.",
   "permissions": [
     "scripting",

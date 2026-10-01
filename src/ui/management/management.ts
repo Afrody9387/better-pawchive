@@ -8,6 +8,7 @@ import { renderArtists, resetArtistsPage, getPageArtists } from "./pages/artists
 import { renderPosts } from "./pages/posts";
 import { renderArtistDetail } from "./pages/artistDetail";
 import { enrichArtistSubset, enrichPosts } from "../../core/services/enrichmentService";
+import { t, getLanguage, initializePreferences, subscribeLanguage } from '../../shared/i18n';
 
 // Re-export for backwards compatibility with tests
 export { formatDate, lastViewedFromPosts } from "./utils/format";
@@ -54,14 +55,14 @@ export function createManagementApp({
   // ── Delete ──────────────────────────────────────────────────────────────────
 
   async function deleteArtist(id: string, name: string): Promise<void> {
-    if (!confirm(`Delete "${name}" and all their tracked posts?`)) return;
+    if (!confirm(t('Delete "{name}" and all their tracked posts?', { name }))) return;
     await tracking.deleteArtistCascade(id);
     await loadData();
     render();
   }
 
   async function deletePost(id: string, title: string): Promise<void> {
-    if (!confirm(`Remove "${title}" from your history?`)) return;
+    if (!confirm(t('Remove "{name}" from your history?', { name: title }))) return;
     await postStore.delete(id);
     await loadData();
     render();
@@ -115,6 +116,16 @@ export function createManagementApp({
   // ── Render ───────────────────────────────────────────────────────────────────
 
   function render(): void {
+    document.documentElement.lang = getLanguage() === 'zh' ? 'zh-CN' : 'en';
+    document.title = `Better Pawchive — ${t('Manage Data →').replace(' →', '')}`;
+    document.querySelectorAll<HTMLElement>('.nav-link').forEach(link => {
+      const labels = { home: 'Home', artists: 'Artists', posts: 'Posts', settings: 'Settings' };
+      const key = labels[link.dataset.page];
+      if (key) {
+        const text = Array.from(link.childNodes).find(node => node.nodeType === Node.TEXT_NODE);
+        if (text) text.textContent = t(key);
+      }
+    });
     const page = currentPage();
     const navPage = page === 'artist' ? 'artists' : page;
 
@@ -138,6 +149,7 @@ export function createManagementApp({
   // ── Bootstrap ────────────────────────────────────────────────────────────────
 
   async function init(): Promise<void> {
+    await initializePreferences();
     await lifecycle.init();
     await loadData();
 
@@ -149,6 +161,7 @@ export function createManagementApp({
     });
 
     window.addEventListener('hashchange', render);
+    subscribeLanguage(render);
 
     if (!window.location.hash || !['#home', '#artists', '#posts', '#artist', '#settings'].includes(window.location.hash)) {
       window.location.hash = '#home';

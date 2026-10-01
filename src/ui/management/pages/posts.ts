@@ -1,3 +1,4 @@
+import { t } from "../../../shared/i18n";
 import { Artist } from "../../../shared/types/Artist";
 import { Post } from "../../../shared/types/Post";
 import { emptyState, escapeHtml } from "../utils/format";
@@ -23,7 +24,7 @@ export function renderPosts(
 
   const header = document.createElement('div');
   header.className = 'page-header';
-  header.innerHTML = `<h1>Posts</h1><p>${visiblePosts.length} post${visiblePosts.length !== 1 ? 's' : ''} viewed</p>`;
+  header.innerHTML = `<h1>${t('Posts')}</h1><p>${t(visiblePosts.length === 1 ? '{count} post viewed' : '{count} posts viewed', { count: visiblePosts.length })}</p>`;
   wrap.appendChild(header);
 
   if (filteredArtist) {
@@ -32,12 +33,12 @@ export function renderPosts(
 
     const label = document.createElement('span');
     label.className = 'filter-bar-label';
-    label.innerHTML = `Showing posts for <strong>${escapeHtml(filteredArtist.name || filteredArtist.id)}</strong>`;
+    label.innerHTML = `${t('Showing posts for')} <strong>${escapeHtml(filteredArtist.name || filteredArtist.id)}</strong>`;
     bar.appendChild(label);
 
     const clearBtn = document.createElement('button');
     clearBtn.className = 'btn-clear-filter';
-    clearBtn.textContent = 'View all posts';
+    clearBtn.textContent = t('View all posts');
     clearBtn.addEventListener('click', () => navigate('posts'));
     bar.appendChild(clearBtn);
 
@@ -46,8 +47,8 @@ export function renderPosts(
 
   if (!visiblePosts.length) {
     wrap.appendChild(emptyState('📄', filterArtistId
-      ? 'No posts tracked for this artist yet.'
-      : 'No posts tracked yet.\nVisit a post page on pawchive.pw, kemono.cr, or coomer.st to get started.'
+      ? t('No posts tracked for this artist yet.')
+      : t('No posts tracked yet.\nVisit a post page on pawchive.pw, kemono.cr, or coomer.st to get started.')
     ));
     return wrap;
   }

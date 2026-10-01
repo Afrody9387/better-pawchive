@@ -1,3 +1,4 @@
+import { t } from "../../../shared/i18n";
 import { Artist } from "../../../shared/types/Artist";
 import { Post } from "../../../shared/types/Post";
 import { buildAvatar } from "../utils/avatar";
@@ -29,11 +30,11 @@ export function renderArtists(
 
   const header = document.createElement('div');
   header.className = 'page-header';
-  header.innerHTML = `<h1>Artists</h1><p>${artists.length} artist${artists.length !== 1 ? 's' : ''} tracked</p>`;
+  header.innerHTML = `<h1>${t('Artists')}</h1><p>${t(artists.length === 1 ? '{count} artist tracked' : '{count} artists tracked', { count: artists.length })}</p>`;
   wrap.appendChild(header);
 
   if (!artists.length) {
-    wrap.appendChild(emptyState('👤', 'No artists tracked yet.\nVisit an artist page on pawchive.pw, kemono.cr, or coomer.st to get started.'));
+    wrap.appendChild(emptyState('👤', t('No artists tracked yet.\nVisit an artist page on pawchive.pw, kemono.cr, or coomer.st to get started.')));
     return wrap;
   }
 
@@ -132,13 +133,13 @@ function renderArtistCard(
   body.className = 'artist-card-body';
 
   const postsLabel = artist.post_count != null
-    ? `${artistPosts.length} viewed / ${artist.post_count} total`
-    : `${artistPosts.length} viewed`;
+    ? t('{count} viewed / {total} total', { count: artistPosts.length, total: artist.post_count })
+    : t('{count} viewed', { count: artistPosts.length });
 
   const stats: [string, string][] = [
-    ['Posts', postsLabel],
-    ['Last Viewed', lastViewedFromPosts(artistPosts)],
-    ['Last Update', formatDate(artist.updated_at)],
+    [t('Posts'), postsLabel],
+    [t('Last Viewed'), lastViewedFromPosts(artistPosts)],
+    [t('Last Update'), formatDate(artist.updated_at)],
   ];
 
   for (const [label, value] of stats) {
@@ -155,7 +156,7 @@ function renderArtistCard(
   footer.className = 'artist-card-footer';
   const delBtn = document.createElement('button');
   delBtn.className = 'btn-delete';
-  delBtn.textContent = 'Delete';
+  delBtn.textContent = t('Delete');
   delBtn.addEventListener('click', () => deleteArtist(artist.id, name));
   footer.appendChild(delBtn);
   card.appendChild(footer);

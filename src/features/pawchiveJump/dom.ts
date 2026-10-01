@@ -1,4 +1,5 @@
 import { parseJumpSource, resolveJumpUrl } from './resolver';
+import { t, subscribeLanguage } from '../../shared/i18n';
 
 type JumpActions = {
   lookup: (service: 'patreon' | 'fanbox', handle: string) => Promise<string>;
@@ -24,6 +25,9 @@ export function setupJumpButton(doc: Document, actions: JumpActions): () => void
   let currentUrl = '';
   let busy = false;
   let disposed = false;
+  const translateButton = () => { button.textContent = t(busy ? 'Resolving creator…' : 'Jump to Pawchive ↗'); };
+  const unsubscribe = subscribeLanguage(translateButton);
+  translateButton();
 
   function update(): void {
     if (!host.isConnected) doc.body.appendChild(host);
@@ -36,23 +40,23 @@ export function setupJumpButton(doc: Document, actions: JumpActions): () => void
     if (busy) return;
     busy = true;
     button.disabled = true;
-    button.textContent = '正在识别作者…';
+    translateButton();
     status.textContent = '';
     const sourceUrl = win.location.href;
     try {
       const destination = await resolveJumpUrl(new URL(sourceUrl), doc, actions.lookup, win.fetch.bind(win));
       if (!disposed && sourceUrl === win.location.href) await actions.open(destination);
     } catch (error) {
-      if (!disposed && sourceUrl === win.location.href) status.textContent = error instanceof Error ? error.message : '跳转失败，请重试。';
+      if (!disposed && sourceUrl === win.location.href) status.textContent = t(error instanceof Error ? error.message : 'Jump failed. Please try again.');
     } finally {
       busy = false;
       button.disabled = false;
-      button.textContent = '跳转至 Pawchive ↗';
+      translateButton();
     }
   });
   // SPA navigation, including Pixiv and Discord, does not reload content scripts.
   const timer = win.setInterval(update, 1000);
   win.addEventListener('popstate', update);
   update();
-  return () => { disposed = true; win.clearInterval(timer); win.removeEventListener('popstate', update); host.remove(); };
+  return () => { disposed = true; unsubscribe(); win.clearInterval(timer); win.removeEventListener('popstate', update); host.remove(); };
 }

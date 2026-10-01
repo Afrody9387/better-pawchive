@@ -1,10 +1,11 @@
 import { Post } from "../../../shared/types/Post";
+import { getLanguage } from '../../../shared/i18n';
 
 export function formatDate(iso: string | undefined): string {
   if (!iso) return '—';
   const d = new Date(iso);
   if (isNaN(d.getTime())) return '—';
-  return d.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+  return d.toLocaleDateString(getLanguage() === 'zh' ? 'zh-CN' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 }
 
 export function lastViewedFromPosts(posts: Post[]): string {

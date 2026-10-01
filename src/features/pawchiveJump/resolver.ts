@@ -44,7 +44,7 @@ export function parseJumpSource(url: URL): JumpTarget | null {
 }
 
 export function buildJumpUrl(target: JumpTarget, id: string): string {
-  if (!/^\d+$/.test(id)) throw new Error('无法识别作者 ID。');
+  if (!/^\d+$/.test(id)) throw new Error('Could not identify the creator ID.');
   return `https://pawchive.pw/${target.service}/${target.service === 'discord' ? 'server' : 'user'}/${id}`
     + (target.postId ? `/post/${target.postId}` : '');
 }
@@ -87,15 +87,15 @@ export async function resolveJumpUrl(
   fetcher: typeof fetch = fetch,
 ): Promise<string> {
   const target = parseJumpSource(url);
-  if (!target) throw new Error('当前页面没有可跳转的作者或服务器。');
+  if (!target) throw new Error('This page has no supported creator or server.');
   let id = target.id || creatorIdFromPage(target, doc);
   if (!id && target.artworkId) {
     const response = await fetcher(`https://www.pixiv.net/ajax/illust/${target.artworkId}`, { credentials: 'include' });
-    if (!response.ok) throw new Error('读取 Pixiv 作品作者失败，请稍后重试。');
+    if (!response.ok) throw new Error('Reading the Pixiv artwork author failed. Please try again.');
     const data = await response.json();
     if (!data.error && String(data.body?.id) === target.artworkId) id = String(data.body.userId || '');
   }
   if (!id && target.handle && target.service !== 'discord') id = await lookup(target.service, target.handle);
-  if (!id) throw new Error('无法识别作者，请在作者主页重试。');
+  if (!id) throw new Error('Could not identify the creator. Please try their profile.');
   return buildJumpUrl(target, id);
 }

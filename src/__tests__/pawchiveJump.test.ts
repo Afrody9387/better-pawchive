@@ -63,7 +63,7 @@ describe('Author resolution', () => {
 
   test('failed artwork resolution does not generate an undefined destination', async () => {
     const fetcher = jest.fn().mockResolvedValue({ ok: false });
-    await expect(resolveJumpUrl(new URL('https://www.pixiv.net/artworks/123'), document, lookup, fetcher)).rejects.toThrow('失败');
+    await expect(resolveJumpUrl(new URL('https://www.pixiv.net/artworks/123'), document, lookup, fetcher)).rejects.toThrow('failed');
     expect(() => buildJumpUrl({ service: 'fanbox' }, 'undefined')).toThrow();
   });
 
@@ -146,7 +146,7 @@ test('public nickname lookup matches service + exact public_id and refuses unkno
   ] });
   expect(await lookupArchivedCreator('fanbox', 'creator')).toBe('123');
   expect(await lookupArchivedCreator('patreon', 'CREATOR')).toBe('456');
-  await expect(lookupArchivedCreator('patreon', 'missing')).rejects.toThrow('暂未找到');
+  await expect(lookupArchivedCreator('patreon', 'missing')).rejects.toThrow('not found');
 });
 
 test('background refuses foreign senders and destinations outside Pawchive', async () => {

@@ -5,14 +5,14 @@ let creatorsPromise: Promise<Map<string, string>> | null = null;
 let creatorsFetchedAt = 0;
 
 export async function lookupArchivedCreator(service: string, handle: string): Promise<string> {
-  if (!['fanbox', 'patreon'].includes(service) || !/^[\w-]{1,100}$/.test(handle)) throw new Error('无效的作者昵称。');
+  if (!['fanbox', 'patreon'].includes(service) || !/^[\w-]{1,100}$/.test(handle)) throw new Error('Invalid creator handle.');
   if (!creatorsPromise || Date.now() - creatorsFetchedAt > 30 * 60 * 1000) {
     creatorsFetchedAt = Date.now();
     creatorsPromise = (async () => {
       const response = await fetch('https://pawchive.pw/api/v1/creators', { headers: { Accept: 'text/css' }, credentials: 'omit' });
-      if (!response.ok) throw new Error('读取 Pawchive 作者列表失败，请稍后重试。');
+      if (!response.ok) throw new Error('Reading the Pawchive creator list failed. Please try again.');
       const creators = await response.json();
-      if (!Array.isArray(creators)) throw new Error('Pawchive 作者列表格式异常。');
+      if (!Array.isArray(creators)) throw new Error('Unexpected Pawchive creator list format.');
       const ids = new Map<string, string>();
       for (const creator of creators) {
         if (typeof creator.public_id === 'string' && /^\d+$/.test(creator.id)) {
@@ -26,7 +26,7 @@ export async function lookupArchivedCreator(service: string, handle: string): Pr
     })().catch(error => { creatorsPromise = null; throw error; });
   }
   const id = (await creatorsPromise).get(`${service}:${handle.toLowerCase()}`);
-  if (!id) throw new Error('Pawchive 暂未找到这个作者。请从作者主页重试，或在 Pawchive 搜索。');
+  if (!id) throw new Error('Creator not found on Pawchive. Try their profile or search on Pawchive.');
   return id;
 }
 

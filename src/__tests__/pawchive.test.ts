@@ -53,7 +53,7 @@ describe('Pawchive quick follow', () => {
     document.querySelector<HTMLButtonElement>('button')!.click();
     await tick();
     expect(fetchMock).not.toHaveBeenCalled();
-    expect(document.querySelector('[role="status"]')!.textContent).toContain('登录');
+    expect(document.querySelector('[role="status"]')!.textContent).toContain('log in');
   });
 
   test('failed writes preserve favorite state and allow retry', async () => {
@@ -65,7 +65,7 @@ describe('Pawchive quick follow', () => {
     await tick();
     expect(button.disabled).toBe(false);
     expect(button.getAttribute('aria-pressed')).toBe('false');
-    expect(document.querySelector('[role="status"]')!.textContent).toContain('重新登录');
+    expect(document.querySelector('[role="status"]')!.textContent).toContain('expired');
   });
 
   test('does not guess or mutate when initial state cannot be loaded', async () => {

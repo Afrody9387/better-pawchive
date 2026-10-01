@@ -1,3 +1,4 @@
+import { t } from "../../../shared/i18n";
 import { Artist } from "../../../shared/types/Artist";
 import { Post } from "../../../shared/types/Post";
 import { hostForArtist } from "../../../core/hosts/HostResolver";
@@ -37,7 +38,7 @@ export function renderArtistDetail(
 
   const backBtn = document.createElement('button');
   backBtn.className = 'btn-back';
-  backBtn.textContent = '← Artists';
+  backBtn.textContent = t('← Artists');
   backBtn.addEventListener('click', () => navigate('artists'));
   heroOverlay.appendChild(backBtn);
 
@@ -82,12 +83,12 @@ export function renderArtistDetail(
   openLink.href = `https://${host}/${artist.content_origin}/user/${artist.id}`;
   openLink.target = '_blank';
   openLink.rel = 'noopener noreferrer';
-  openLink.textContent = 'Open profile';
+  openLink.textContent = t('Open profile');
   actions.appendChild(openLink);
 
   const delBtn = document.createElement('button');
   delBtn.className = 'btn-detail-danger';
-  delBtn.textContent = 'Delete artist';
+  delBtn.textContent = t('Delete artist');
   delBtn.addEventListener('click', () => deleteArtist(artist.id, name));
   actions.appendChild(delBtn);
 
@@ -102,9 +103,9 @@ export function renderArtistDetail(
     : `${artistPosts.length}`;
 
   const statItems: [string, string][] = [
-    ['Posts viewed', postsLabel],
-    ['Last viewed', lastViewedFromPosts(artistPosts)],
-    ['Updated', formatDate(artist.updated_at)],
+    [t('Posts viewed'), postsLabel],
+    [t('Last viewed'), lastViewedFromPosts(artistPosts)],
+    [t('Updated'), formatDate(artist.updated_at)],
   ];
 
   for (const [label, value] of statItems) {
@@ -125,11 +126,11 @@ export function renderArtistDetail(
 
   const sectionHeader = document.createElement('div');
   sectionHeader.className = 'section-title';
-  sectionHeader.textContent = `${artistPosts.length} post${artistPosts.length !== 1 ? 's' : ''} viewed`;
+  sectionHeader.textContent = t(artistPosts.length === 1 ? '{count} post viewed' : '{count} posts viewed', { count: artistPosts.length });
   postsSection.appendChild(sectionHeader);
 
   if (!artistPosts.length) {
-    postsSection.appendChild(emptyState('📄', 'No posts tracked for this artist yet.'));
+    postsSection.appendChild(emptyState('📄', t('No posts tracked for this artist yet.')));
   } else {
     const sorted = [...artistPosts].sort((a, b) => (b.viewed_at > a.viewed_at ? 1 : -1));
     const cards: HTMLElement[] = [];

@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.4.0] - 2026-10-01
+
+### Added
+
+- Persistent English / Simplified Chinese language selection in Settings for the
+  popup, management pages, viewed labels, favorites, and source jump controls.
+- Optional local Pawchive interface translation in Chinese mode, including
+  navigation, search, sorting, profile tabs, favorite controls, and attachment counts.
+- Reversible translation through dynamic updates and HTMX history snapshots,
+  preserving creator names, post content, form values, and native click handlers.
+- A bilingual language and translation testing checklist.
+
 ## [2.3.1] - 2026-10-01
 
 ### Added
