@@ -54,8 +54,8 @@ function injectFirefox(m: Record<string, any>, patterns: string[]): void {
 // Shared fixtures
 // ---------------------------------------------------------------------------
 
-const SUPPORTED_HOSTS = ['coomer.st', 'kemono.cr'] as const;
-const EXPECTED_PATTERNS = ['https://coomer.st/*', 'https://kemono.cr/*'];
+const SUPPORTED_HOSTS = ['coomer.st', 'kemono.cr', 'pawchive.pw'] as const;
+const EXPECTED_PATTERNS = ['https://coomer.st/*', 'https://kemono.cr/*', 'https://pawchive.pw/*'];
 
 const CHROME_TEMPLATE_PATH = path.resolve(
   __dirname, '../../manifests/chrome.template.json'
@@ -111,12 +111,14 @@ describe('injectChrome', () => {
 
   it('uses PNG icon assets that exist in source tree', () => {
     expect(manifest.icons).toEqual({
-      '16': 'icons/logo-32.png',
-      '48': 'icons/logo-64.png',
+      '16': 'icons/logo-16.png',
+      '32': 'icons/logo-32.png',
+      '48': 'icons/logo-48.png',
+      '64': 'icons/logo-64.png',
       '128': 'icons/logo-128.png',
     });
     expect(manifest.action.default_icon).toEqual({
-      '16': 'icons/logo-32.png',
+      '16': 'icons/logo-16.png',
       '32': 'icons/logo-32.png',
     });
     ['logo-32.png', 'logo-64.png', 'logo-128.png'].forEach((file) => {

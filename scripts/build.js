@@ -8,6 +8,7 @@ const path = require('path');
 // Host Support Policy — single source of truth consumed by the build.
 // ---------------------------------------------------------------------------
 const SUPPORTED_HOSTS = require('../src/shared/constants/supportedHosts.json');
+const JUMP_SOURCES = require('../src/shared/constants/jumpSources.json');
 
 const target = process.argv[2]; // 'chrome' or 'firefox'
 
@@ -51,6 +52,14 @@ try {
   } else if (target === 'firefox') {
     injectFirefox(manifest, matchPatterns);
   }
+  manifest.content_scripts.push({
+    matches: JUMP_SOURCES.matches,
+    js: ['jump.js'],
+    run_at: 'document_idle',
+  });
+  const jumpPermissions = JUMP_SOURCES.matches;
+  if (target === 'chrome') manifest.host_permissions = [...manifest.host_permissions, ...jumpPermissions];
+  else manifest.permissions.push(...jumpPermissions);
 } catch (/** @type {any} */ err) {
   console.error(`Build error: template validation failed for target "${target}": ${err.message}`);
   process.exit(1);
@@ -72,6 +81,7 @@ fs.copyFileSync(mgmt_ui,  dest + 'management.html');
 fs.copyFileSync(shared_css, dest + 'styles.css');
 fs.copyFileSync(mgmt_css, dest + 'management.css');
 fs.copyFileSync(pop_css,  dest + 'popup.css');
+fs.copyFileSync(path.join(__dirname, '../LICENSE'), path.join(dest, 'LICENSE'));
 
 console.log(`Built ${target} manifest and copied UI files to dist/`);
 

@@ -1,4 +1,14 @@
 {
+  "name": "better-pawchive",
+  "version": "2.3.1",
+  "private": true,
+  "description": "Pawchive quick favorites, source-site jump buttons, and browsing history tools.",
+  "license": "MIT",
+  "homepage": "https://github.com/Afrody9387/better-pawchive",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Afrody9387/better-pawchive.git"
+  },
   "scripts": {
     "build": "webpack && node ./scripts/build.js",
     "test": "jest",

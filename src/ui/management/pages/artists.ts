@@ -33,7 +33,7 @@ export function renderArtists(
   wrap.appendChild(header);
 
   if (!artists.length) {
-    wrap.appendChild(emptyState('👤', 'No artists tracked yet.\nVisit an artist page on kemono.cr or coomer.st to get started.'));
+    wrap.appendChild(emptyState('👤', 'No artists tracked yet.\nVisit an artist page on pawchive.pw, kemono.cr, or coomer.st to get started.'));
     return wrap;
   }
 

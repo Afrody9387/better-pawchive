@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Better Coomer/Kemono",
-  "version": "2.2.0",
-  "description": "Tracks URLs accessed within a website and marks them visually.",
+  "name": "Better Pawchive",
+  "version": "2.3.1",
+  "description": "Quickly favorite creators, jump to Pawchive from source sites, and track viewed posts.",
   "permissions": [
     "scripting",
     "tabs",
@@ -31,7 +31,7 @@
     "128": "icons/logo-128.png"
   },
   "action": {
-    "default_title": "Abrir Better Coomer/Kemono",
+    "default_title": "Open Better Pawchive",
     "default_popup": "popup.html",
     "default_icon": {
       "16": "icons/logo-16.png",

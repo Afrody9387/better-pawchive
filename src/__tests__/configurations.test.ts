@@ -5,6 +5,7 @@ describe('Configurations.isHostAllowed — Host Support Policy (exact match)', (
     // Supported hosts (exact)
     ['kemono.cr', true],
     ['coomer.st', true],
+    ['pawchive.pw', true],
     // Case-insensitive
     ['KEMONO.CR', true],
     ['Coomer.St', true],

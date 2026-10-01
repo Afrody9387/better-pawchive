@@ -47,7 +47,7 @@ export function renderPosts(
   if (!visiblePosts.length) {
     wrap.appendChild(emptyState('📄', filterArtistId
       ? 'No posts tracked for this artist yet.'
-      : 'No posts tracked yet.\nVisit a post page on kemono.cr or coomer.st to get started.'
+      : 'No posts tracked yet.\nVisit a post page on pawchive.pw, kemono.cr, or coomer.st to get started.'
     ));
     return wrap;
   }

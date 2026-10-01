@@ -10,6 +10,11 @@ jest.mock("../shared/utils/date", () => ({
 describe("Enrichment Transformation Utils", () => {
   
   describe("transformArtistProfile", () => {
+    test("uses Pawchive's same-origin icons and banners", () => {
+      const result = transformArtistProfile({ id: 'a1', content_origin: 'patreon' }, { id: 'a1', service: 'patreon' }, 'pawchive.pw');
+      expect(result.thumbnail_url).toBe('https://pawchive.pw/icons/patreon/a1');
+      expect(result.banner_url).toBe('https://pawchive.pw/banners/patreon/a1');
+    });
     const existingArtist: Artist = {
       id: "a1",
       content_origin: "fansly"

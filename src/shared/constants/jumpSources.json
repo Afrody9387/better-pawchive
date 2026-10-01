@@ -1,0 +1,8 @@
+{
+  "matches": [
+    "https://*.patreon.com/*",
+    "https://*.fanbox.cc/*",
+    "https://www.pixiv.net/*",
+    "https://discord.com/channels/*"
+  ]
+}

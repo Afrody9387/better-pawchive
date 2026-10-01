@@ -3,5 +3,8 @@ export enum EventTypes {
   AddPlayerElement,
   RemoveViewTag,
   RemoveViewTagFromUI,
-  UpdateData
+  UpdateData,
+  PageReady,
+  ResolveJumpCreator,
+  OpenPawchiveJump
 }

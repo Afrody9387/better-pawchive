@@ -1,13 +1,18 @@
 {
   "manifest_version": 2,
-  "name": "Better Coomer/Kemono",
-  "version": "2.2.0",
-  "description": "Tracks URLs accessed within a website and marks them visually.",
+  "name": "Better Pawchive",
+  "version": "2.3.1",
+  "description": "Quickly favorite creators, jump to Pawchive from source sites, and track viewed posts.",
   "permissions": [
     "tabs",
     "storage",
+    "https://coomer.st/*",
     "https://kemono.cr/*",
-    "https://coomer.st/*"
+    "https://pawchive.pw/*",
+    "https://*.patreon.com/*",
+    "https://*.fanbox.cc/*",
+    "https://www.pixiv.net/*",
+    "https://discord.com/channels/*"
   ],
   "background": {
     "scripts": [
@@ -18,14 +23,27 @@
   "content_scripts": [
     {
       "matches": [
+        "https://coomer.st/*",
         "https://kemono.cr/*",
-        "https://coomer.st/*"
+        "https://pawchive.pw/*"
       ],
       "js": [
         "content.js"
       ],
       "css": [
         "styles.css"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://*.patreon.com/*",
+        "https://*.fanbox.cc/*",
+        "https://www.pixiv.net/*",
+        "https://discord.com/channels/*"
+      ],
+      "js": [
+        "jump.js"
       ],
       "run_at": "document_idle"
     }

@@ -1,5 +1,11 @@
 import { ArtistProfileDTO } from "../../shared/types/ArtistProfileDTO";
-import { PostResponseDTO } from "../../shared/types/PostDTO";
+import { PostDTO, PostResponseDTO } from "../../shared/types/PostDTO";
+
+/** Pawchive returns the post directly; Kemono wraps it in { post, attachments }. */
+export function normalizePostResponse(data: PostResponseDTO | (PostDTO & { attachments?: PostResponseDTO['attachments'] })): PostResponseDTO {
+  if ('post' in data) return data;
+  return { post: data, attachments: data.attachments || [] };
+}
 
 const FETCH_HEADERS = { 'Accept': 'text/css' } as const;
 
@@ -54,5 +60,5 @@ export async function fetchPostDetails(
   const url = buildPostUrl(host, contentOrigin, artistId, postId);
   const res = await fetch(url, { headers: FETCH_HEADERS });
   if (!res.ok) return null;
-  return res.json() as Promise<PostResponseDTO>;
+  return normalizePostResponse(await res.json());
 }

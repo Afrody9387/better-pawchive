@@ -1,0 +1,37 @@
+name: Build and test
+
+on:
+  push:
+    branches: [pawchive]
+  pull_request:
+    branches: [pawchive]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npm test -- --runInBand
+      - name: Build Chrome and Edge
+        run: |
+          npm run build -- chrome
+          mkdir -p artifacts
+          cd dist
+          zip -qr ../artifacts/better-pawchive-chrome.zip .
+      - name: Build Firefox
+        run: |
+          npm run build -- firefox
+          cd dist
+          zip -qr ../artifacts/better-pawchive-firefox.zip .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: browser-builds
+          path: artifacts/*.zip

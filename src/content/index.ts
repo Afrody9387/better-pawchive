@@ -2,6 +2,20 @@ import { EventTypes } from "../shared/constants/eventTypes";
 import { AddAudioElementsForAudioLinks } from "../features/audioPlayer/dom";
 import { AddViewedTagsOnAllPosts } from "../features/viewTracking/dom";
 import { ContentMessage } from "../shared/types/ContentMessage";
+import { setupQuickFollow } from "../features/quickFollow/dom";
+
+if (location.hostname === 'pawchive.pw') {
+  const start = () => {
+    setupQuickFollow();
+    const notifyPageReady = () => {
+      if (isContextValid()) browser.runtime.sendMessage({ type: EventTypes.PageReady, data: {} }).catch(() => {});
+    };
+    document.addEventListener('htmx:afterSettle', notifyPageReady);
+    document.addEventListener('htmx:historyRestore', notifyPageReady);
+  };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once: true });
+  else start();
+}
 
 if (typeof browser === "undefined") {
   //@ts-ignore
@@ -15,7 +29,7 @@ try {
   (document.head || document.documentElement).appendChild(script);
   script.onload = () => script.remove();
 } catch (e) {
-  console.error('Failed to inject Better Coomer/Kemono interception script:', e);
+  console.error('Failed to inject Better Pawchive interception script:', e);
 }
 
 /**

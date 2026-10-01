@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
-  "name": "Better Coomer/Kemono",
-  "version": "2.2.0",
-  "description": "Tracks URLs accessed within a website and marks them visually.",
+  "name": "Better Pawchive",
+  "version": "2.3.1",
+  "description": "Quickly favorite creators, jump to Pawchive from source sites, and track viewed posts.",
   "permissions": [
     "tabs",
     "storage"

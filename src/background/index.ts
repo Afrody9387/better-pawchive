@@ -11,6 +11,8 @@ import { setupMessageHandler } from "./messageHandler";
 import { transformArtistProfile, transformPostProfile } from "../core/utils/enrichment";
 import { fetchArtistProfile, fetchPostDetails } from "../core/services/apiClient";
 import { tryParseUrl } from "../shared/utils/url";
+import { ContentMessage } from "../shared/types/ContentMessage";
+import { setupJumpMessageHandler } from "../features/pawchiveJump/background";
 
 if (typeof browser === "undefined") {
   //@ts-ignore
@@ -171,6 +173,11 @@ export function createBackgroundApp({
         storedArtist = artistWithPosts.artist;
       }
 
+      if (storedArtist.hostname !== url.host) {
+        storedArtist = { ...storedArtist, hostname: url.host };
+        await artists.update(storedArtist);
+      }
+
       const now = new Date();
       const lastEnriched = storedArtist.last_enriched_at ? new Date(storedArtist.last_enriched_at) : null;
       const shouldEnrich = !lastEnriched || (now.getTime() - lastEnriched.getTime() > 24 * 60 * 60 * 1000) || !storedArtist.name;
@@ -212,13 +219,13 @@ export function createBackgroundApp({
         await posts.add(newPost);
         post = newPost;
 
-        const artist = await artists.get(urlData.artist_id);
-        if (!artist) {
-          await artists.add({
-            id: urlData.artist_id,
-            content_origin: urlData.content_origin,
-          });
-        }
+      }
+
+      const artist = await artists.get(urlData.artist_id);
+      if (!artist) {
+        await artists.add({ id: urlData.artist_id, content_origin: urlData.content_origin, hostname: url.host });
+      } else if (artist.hostname !== url.host) {
+        await artists.update({ ...artist, hostname: url.host });
       }
 
       const shouldEnrich = !post.last_enriched_at;
@@ -242,6 +249,13 @@ export function createBackgroundApp({
     }
   }
 
+  // Pawchive swaps #main with HTMX without completing a new browser load.
+  function onPageReady(message: ContentMessage, sender: browser.runtime.MessageSender): void {
+    if (message.type !== EventTypes.PageReady || sender.tab?.id == null) return;
+    onTabUpdated(sender.tab.id, { status: 'complete' }, sender.tab).catch(console.error);
+  }
+
+  browser.runtime.onMessage.addListener(onPageReady);
   browser.runtime.onInstalled.addListener(onInstalled);
   browser.tabs.onUpdated.addListener(onTabUpdated);
 
@@ -249,9 +263,11 @@ export function createBackgroundApp({
     dispose() {
       browser.runtime.onInstalled.removeListener(onInstalled);
       browser.tabs.onUpdated.removeListener(onTabUpdated);
+      browser.runtime.onMessage.removeListener(onPageReady);
     },
   };
 }
 
 // ── Entrypoint ────────────────────────────────────────────────────────────────
+setupJumpMessageHandler();
 createBackgroundApp(createDatabaseServices());

@@ -1,5 +1,30 @@
 # Changelog
 
+## [2.3.1] - 2026-10-01
+
+### Added
+
+- Pawchive support, including flat post API responses, creator artwork paths,
+  and HTMX navigation handling for viewed tags and audio players.
+- Account favorite/unfavorite stars on creator search and Similar Artists cards.
+- Bottom-right source-site jump buttons for Patreon, Fanbox, Pixiv, and Discord
+  server pages, with numeric creator resolution and a new-tab preference.
+- Chinese and English installation guides, downloadable browser builds,
+  a dependency lockfile, and GitHub Actions checks.
+
+### Changed
+
+- Public Pawchive edition renamed to **Better Pawchive** on the `pawchive` branch.
+- Keep upstream database names and Firefox extension id to preserve compatibility.
+- Include the original MIT license in browser distribution packages.
+
+### Fixed
+
+- Update stale icon assertions to match the upstream manifest assets.
+- Keep archive content-script matches separate from source-site jump permissions.
+
+---
+
 ## [2.1.1] - 2026-03-31
 
 ### Fixed

@@ -1,4 +1,5 @@
 node_modules
-package-lock.json
 **/dist
 releases/
+.DS_Store
+docs/pawchive-quick-follow-preview.png

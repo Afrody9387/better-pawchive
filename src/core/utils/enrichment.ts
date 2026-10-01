@@ -14,6 +14,7 @@ export function transformArtistProfile(
   hostname: string
 ): Artist {
   const data = apiData || {};
+  const artworkHost = hostname === 'pawchive.pw' ? hostname : `img.${hostname}`;
   
   return {
     ...existing,
@@ -22,10 +23,10 @@ export function transformArtistProfile(
     hostname: hostname || existing.hostname,
     // Provide placeholders/fallbacks for URLs
     thumbnail_url: (data.service && data.id) 
-      ? `https://img.${hostname}/icons/${data.service}/${data.id}` 
+      ? `https://${artworkHost}/icons/${data.service}/${data.id}`
       : (existing.thumbnail_url || ''),
     banner_url: (data.service && data.id) 
-      ? `https://img.${hostname}/banners/${data.service}/${data.id}` 
+      ? `https://${artworkHost}/banners/${data.service}/${data.id}`
       : (existing.banner_url || ''),
     // Use existing values or safe defaults
     post_count: data.post_count ?? existing.post_count ?? 0,

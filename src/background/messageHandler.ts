@@ -3,7 +3,7 @@ import { EventTypes } from "../shared/constants/eventTypes";
 import { ContentMessage } from "../shared/types/ContentMessage";
 import { GetDate } from "../shared/utils/date";
 import { transformArtistProfile, transformPostProfile } from "../core/utils/enrichment";
-import { PostResponseDTO } from "../shared/types/PostDTO";
+import { normalizePostResponse } from "../core/services/apiClient";
 
 type MessageHandlerServices = {
   lifecycle: DatabaseLifecycle;
@@ -50,13 +50,13 @@ export function setupMessageHandler({ lifecycle, artists, posts }: MessageHandle
 
       // Post response
       else if (url.includes('/post/')) {
-        const data = payload as PostResponseDTO;
+        const data = normalizePostResponse(payload);
         const p = data.post;
         if (!p || !p.id) return;
 
         const storedPost = await posts.get(p.id);
         if (storedPost) {
-          const enrichedPost = transformPostProfile(storedPost, p, data.attachments);
+          const enrichedPost = transformPostProfile(storedPost, p, data.attachments, urlObj.host);
           await posts.update(enrichedPost);
           console.log(`Updated post ${p.id} from intercepted request`);
         }

@@ -4,6 +4,8 @@ import { Artist } from "../shared/types/Artist";
 describe("HostResolver.isSupportedHost", () => {
   test.each([
     ["kemono.cr", true],
+    ["pawchive.pw", true],
+    ["pawchive.pw.evil.com", false],
     ["coomer.st", true],
     ["KEMONO.CR", true],
     ["Coomer.St", true],
@@ -20,6 +22,9 @@ describe("HostResolver.isSupportedHost", () => {
 });
 
 describe("HostResolver.resolveArtistHost", () => {
+  test("keeps Pawchive host for management links and enrichment", () => {
+    expect(hostForArtist({ id: '58020585', content_origin: 'patreon', hostname: 'pawchive.pw' })).toBe('pawchive.pw');
+  });
   test("keeps exact supported artist host", () => {
     const artist: Artist = { id: "a1", content_origin: "patreon", hostname: "kemono.cr" };
     expect(HostResolver.resolveArtistHost(artist)).toBe("kemono.cr");

@@ -9,6 +9,7 @@ module.exports = () => {
       popup: `./src/ui/popup/popup.ts`,
       management: `./src/ui/management/management.ts`,
       inject: `./src/content/inject.ts`,
+      jump: `./src/features/pawchiveJump/index.ts`,
     },
     output: {
       path: path.resolve(__dirname, `dist/`),
